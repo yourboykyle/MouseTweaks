@@ -7,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -69,7 +70,8 @@ public class Main extends DeobfuscationLayer {
 				|| Reflection.doesClassExist("net.minecraftforge.client.MinecraftForgeClient")));
 		if (forge) {
 			Logger.Log("Minecraft Forge is installed.");
-			MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
+			ClientCommandHandler.instance.registerCommand(new AddLoreCommand());
+			ClientCommandHandler.instance.registerCommand(new RemoveLoreCommand());
 		} else {
 			Logger.Log("Minecraft Forge is not installed.");
 		}
@@ -78,6 +80,7 @@ public class Main extends DeobfuscationLayer {
 				|| Reflection.doesClassExist("com.mumfrey.liteloader.core.LiteLoader"));
 		if (liteLoader) {
 			Logger.Log("LiteLoader is installed.");
+			//register liteloader command
 		} else {
 			Logger.Log("LiteLoader is not installed.");
 		}
