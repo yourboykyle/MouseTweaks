@@ -16,6 +16,7 @@ public class Config {
 	public WheelSearchOrder wheelSearchOrder = WheelSearchOrder.LAST_TO_FIRST;
 	public Set<OnTickMethod> onTickMethodOrder = new LinkedHashSet<OnTickMethod>(); // The order has to be preserved.
 	public static boolean debug = false;
+	public boolean loreWhitelist = false;
 
 	public Config(String fileName) {
 		this.fileName = fileName;
@@ -40,6 +41,7 @@ public class Config {
 		wheelTweak = Integer.parseInt(properties.getProperty(Constants.CONFIG_WHEEL_TWEAK)) != 0;
 		wheelSearchOrder = WheelSearchOrder.fromId(Integer.parseInt(properties.getProperty(Constants.CONFIG_WHEEL_SEARCH_ORDER)));
 		debug = Integer.parseInt(properties.getProperty(Constants.CONFIG_DEBUG)) != 0;
+		loreWhitelist = Integer.parseInt(properties.getProperty(Constants.CONFIG_LORE_WHITELIST)) != 0;
 		onTickMethodOrderFromString(properties.getProperty(Constants.CONFIG_ONTICK_METHOD_ORDER));
 
 		save();
@@ -53,6 +55,7 @@ public class Config {
 		properties.setProperty(Constants.CONFIG_WHEEL_TWEAK, wheelTweak ? "1" : "0");
 		properties.setProperty(Constants.CONFIG_WHEEL_SEARCH_ORDER, String.valueOf(wheelSearchOrder.ordinal()));
 		properties.setProperty(Constants.CONFIG_DEBUG, debug ? "1" : "0");
+		properties.setProperty(Constants.CONFIG_LORE_WHITELIST, loreWhitelist ? "1" : "0");
 		properties.setProperty(Constants.CONFIG_ONTICK_METHOD_ORDER, onTickMethodOrderString());
 
 		try {
@@ -116,5 +119,6 @@ public class Config {
 		defaultValues.setProperty(Constants.CONFIG_WHEEL_SEARCH_ORDER, "1");
 		defaultValues.setProperty(Constants.CONFIG_ONTICK_METHOD_ORDER, "Forge, LiteLoader");
 		defaultValues.setProperty(Constants.CONFIG_DEBUG, "0");
+		defaultValues.setProperty(Constants.CONFIG_LORE_WHITELIST, "0");
 	}
 }

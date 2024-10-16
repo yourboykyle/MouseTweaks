@@ -13,6 +13,7 @@ public class Constants {
 	public static final String CONFIG_WHEEL_SEARCH_ORDER     = "WheelSearchOrder";
 	public static final String CONFIG_ONTICK_METHOD_ORDER    = "OnTickMethodOrder";
 	public static final String CONFIG_DEBUG                  = "Debug";
+	public static final String CONFIG_LORE_WHITELIST = "LoreWhitelist";
 
 	// Obfuscated names
 	public static final String ISMOUSEOVERSLOT_NAME = "a";

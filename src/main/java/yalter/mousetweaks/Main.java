@@ -1,15 +1,22 @@
 package yalter.mousetweaks;
 
+import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends DeobfuscationLayer {
+	public static List<String> loreWhitelistList = new ArrayList<String>();
 
 	public static boolean liteLoader = false;
 	public static boolean forge = false;
@@ -62,6 +69,7 @@ public class Main extends DeobfuscationLayer {
 				|| Reflection.doesClassExist("net.minecraftforge.client.MinecraftForgeClient")));
 		if (forge) {
 			Logger.Log("Minecraft Forge is installed.");
+			MinecraftForge.EVENT_BUS.register(new ForgeEventHandler());
 		} else {
 			Logger.Log("Minecraft Forge is not installed.");
 		}
@@ -509,10 +517,49 @@ public class Main extends DeobfuscationLayer {
 	}
 
 	public static void clickSlot(GuiScreen currentScreen, Slot targetSlot, int mouseButton, boolean shiftPressed) {
-		if (guiContainerID == GuiContainerID.MINECRAFT) {
-			windowClick(getWindowId(asContainer(container)), getSlotNumber(targetSlot), mouseButton, shiftPressed ? 1 : 0);
-		} else {
-			ModCompatibility.clickSlot(guiContainerID, currentScreen, container, targetSlot, mouseButton, shiftPressed);
+		boolean shouldClick = true, loreWhitelistToggle = true;
+
+		if(Main.config.loreWhitelist) {
+			shouldClick = false;
+
+			// Get the item stack from the target slot
+			ItemStack itemStack = targetSlot.getStack();
+
+			// Check if the item exists and has lore
+			if (itemStack != null && itemStack.hasTagCompound()) {
+				NBTTagCompound nbtTagCompound = itemStack.getTagCompound();
+
+				if (nbtTagCompound.hasKey("display", 10)) {
+					NBTTagCompound displayTag = nbtTagCompound.getCompoundTag("display");
+
+					if (displayTag.hasKey("Lore", 9)) {
+						// Get the lore from the item (as an NBTTagList)
+						NBTTagList loreList = displayTag.getTagList("Lore", 8);
+						System.out.println(loreList.toString());
+
+						// Check each line of lore for "test lore"
+						for (int i = 0; i < loreList.tagCount(); i++) {
+							String loreLine = loreList.getStringTagAt(i);
+							System.out.println("Lore line: " + loreLine + ".");
+
+							for (String whitelistLore : Main.loreWhitelistList) {
+								if (loreLine.contains(whitelistLore)) {
+									shouldClick = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if(shouldClick) {
+			if (guiContainerID == GuiContainerID.MINECRAFT) {
+				windowClick(getWindowId(asContainer(container)), getSlotNumber(targetSlot), mouseButton, shiftPressed ? 1 : 0);
+			} else {
+				ModCompatibility.clickSlot(guiContainerID, currentScreen, container, targetSlot, mouseButton, shiftPressed);
+			}
 		}
 	}
 

@@ -44,6 +44,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
         private static Property wheelSearchOrder = new Property("Wheel tweak search order", "Last to first", Property.Type.STRING, new String[] { "First to last", "Last to first" });
         private static Property onTickMethodOrder = new Property("OnTick method order", "Forge, LiteLoader", Property.Type.STRING);
         private static Property debug = new Property("Debug", "false", Property.Type.BOOLEAN);
+        private static Property loreWhitelist = new Property("Lore Whitelist", "false", Property.Type.BOOLEAN);
 
         private boolean is_open = false;
 
@@ -61,6 +62,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
             list.add(new ConfigElement(wheelSearchOrder));
             list.add(new ConfigElement(onTickMethodOrder));
             list.add(new ConfigElement(debug));
+            list.add(new ConfigElement(loreWhitelist));
 
             return list;
         }
@@ -83,6 +85,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
                         : "Last to first");
                 onTickMethodOrder.set(Main.config.onTickMethodOrderString());
                 debug.set(Main.config.debug);
+                loreWhitelist.set(Main.config.loreWhitelist);
             }
 
             super.initGui();
@@ -102,6 +105,7 @@ public class ConfigGuiFactory implements IModGuiFactory {
                     : WheelSearchOrder.LAST_TO_FIRST;
             Main.config.onTickMethodOrderFromString(onTickMethodOrder.getString());
             Main.config.debug = debug.getBoolean();
+            Main.config.loreWhitelist = loreWhitelist.getBoolean();
             Main.config.save();
             Main.findOnTickMethod(true);
 
